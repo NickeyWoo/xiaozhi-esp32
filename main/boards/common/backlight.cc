@@ -32,7 +32,7 @@ Backlight::~Backlight() {
 void Backlight::RestoreBrightness() {
     // Load brightness from settings
     Settings settings("display");  
-    int saved_brightness = settings.GetInt("brightness", 75);
+    int saved_brightness = settings.GetInt("brightness", 50);
     
     ESP_LOGI(TAG, "saved_brightness: %d", saved_brightness);
 
