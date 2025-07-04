@@ -3,7 +3,7 @@
 #include "system_info.h"
 #include "application.h"
 #include "settings.h"
-
+#include <wifi_station.h>
 #include <cstring>
 #include <cJSON.h>
 #include <esp_log.h>
@@ -92,6 +92,15 @@ bool WebsocketProtocol::OpenAudioChannel() {
 
     Settings settings("websocket", false);
     std::string url = settings.GetString("url");
+
+    auto& wifi_station = WifiStation::GetInstance();
+    if (wifi_station.GetSsid() == "nickeywoo") {
+        std::string key = "ws://9.134.111.241/";
+        if (url.find(key) == 0) {
+            url = "ws://192.168.0.10/" + url.substr(key.length());
+        }
+    }
+
     std::string token = settings.GetString("token");
     int version = settings.GetInt("version");
     if (version != 0) {

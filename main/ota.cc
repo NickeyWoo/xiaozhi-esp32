@@ -3,6 +3,7 @@
 #include "settings.h"
 #include "assets/lang_config.h"
 
+#include <wifi_station.h>
 #include <cJSON.h>
 #include <esp_log.h>
 #include <esp_partition.h>
@@ -41,6 +42,11 @@ Ota::~Ota() {
 }
 
 std::string Ota::GetCheckVersionUrl() {
+    auto& wifi_station = WifiStation::GetInstance();
+    if (wifi_station.GetSsid() == "nickeywoo") {
+        return "http://192.168.0.10/xiaozhi/ota/";
+    }
+
     Settings settings("wifi", false);
     std::string url = settings.GetString("ota_url");
     if (url.empty()) {
@@ -89,6 +95,8 @@ bool Ota::CheckVersion() {
     std::string data = board.GetJson();
     std::string method = data.length() > 0 ? "POST" : "GET";
     http->SetContent(std::move(data));
+
+    ESP_LOGI(TAG, "ota open url: %s", url.c_str());
 
     if (!http->Open(method, url)) {
         ESP_LOGE(TAG, "Failed to open HTTP connection");

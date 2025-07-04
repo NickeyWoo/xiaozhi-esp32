@@ -86,13 +86,22 @@ private:
     }
 
     void InitializeButtons() {
+        boot_button_.OnPressDown([this]() {
+            auto& app = Application::GetInstance();
+            app.StartListening();
+        });
+
+        boot_button_.OnPressUp([this]() {
+            auto& app = Application::GetInstance();
+            app.StopListening();
+        });
+
         boot_button_.OnClick([this]() {
             power_save_timer_->WakeUp();
             auto& app = Application::GetInstance();
             if (app.GetDeviceState() == kDeviceStateStarting && !WifiStation::GetInstance().IsConnected()) {
                 ResetWifiConfiguration();
             }
-            app.ToggleChatState();
         });
 
         volume_up_button_.OnClick([this]() {

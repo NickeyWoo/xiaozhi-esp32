@@ -96,6 +96,8 @@ void WifiBoard::StartNetwork() {
         auto display = Board::GetInstance().GetDisplay();
         std::string notification = Lang::Strings::CONNECTED_TO;
         notification += ssid;
+
+        ESP_LOGI(TAG, "connected wifi: %s", ssid.c_str());
         display->ShowNotification(notification.c_str(), 30000);
     });
     wifi_station.Start();
@@ -116,6 +118,7 @@ Http* WifiBoard::CreateHttp() {
 WebSocket* WifiBoard::CreateWebSocket() {
     Settings settings("websocket", false);
     std::string url = settings.GetString("url");
+
     if (url.find("wss://") == 0) {
         return new WebSocket(new TlsTransport());
     } else {
